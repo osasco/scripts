@@ -1,187 +1,123 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+	echo "Copie e execute o modelo abaixo, alterando os valores desejados:"
+	echo
+	echo "$0 50=0 100=0 156=0 220=0 311=0 440=0 622=0 880=0 1250=0 1750=0 2500=0 3500=0 5000=0 10000=0 20000=0"
+	echo
+	exit
+fi
+
 LADSPA_SINK="ladspa_out"
 
-echo -n "Obtendo os parâmetros... "
-B1="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B2="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B3="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B4="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B5="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B6="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B7="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B8="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B9="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B10="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B11="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B12="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B13="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B14="$1"
-if [ -z "$2" ]; then
-	echo "não foram fornecidos 15 parâmetros de entrada."
-	exit 255
-else
-	shift
-fi
-B15="$1"
+B50=0
+B100=0
+B156=0
+B220=0
+B311=0
+B440=0
+B622=0
+B880=0
+B1250=0
+B1750=0
+B2500=0
+B3500=0
+B5000=0
+B10000=0
+B20000=0
 
-if [[ ! $B1 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 1 não é um número válido."
-	exit 254
-fi
-if [[ ! $B2 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 2 não é um número válido."
-	exit 254
-fi
-if [[ ! $B3 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 3 não é um número válido."
-	exit 254
-fi
-if [[ ! $B4 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 4 não é um número válido."
-	exit 254
-fi
-if [[ ! $B5 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 5 não é um número válido."
-	exit 254
-fi
-if [[ ! $B6 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 6 não é um número válido."
-	exit 254
-fi
-if [[ ! $B7 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 7 não é um número válido."
-	exit 254
-fi
-if [[ ! $B8 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 8 não é um número válido."
-	exit 254
-fi
-if [[ ! $B9 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 9 não é um número válido."
-	exit 254
-fi
-if [[ ! $B10 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 10 não é um número válido."
-	exit 254
-fi
-if [[ ! $B11 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 11 não é um número válido."
-	exit 254
-fi
-if [[ ! $B12 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 12 não é um número válido."
-	exit 254
-fi
-if [[ ! $B13 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 13 não é um número válido."
-	exit 254
-fi
-if [[ ! $B14 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 14 não é um número válido."
-	exit 254
-fi
-if [[ ! $B15 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
-	echo "Banda 15 não é um número válido."
-	exit 254
-fi
+QUIT_LOOP=0
+while [ $QUIT_LOOP -eq 0 ]; do
+	if [[ $1 =~ ^[0-9]+=-?[0-9]+\.?[0-9]*$ ]]; then
+		{ read -d '' BANDA_HZ; }< <(echo "$1" | sed -rn 's/(.+)=.+/\1/p')
+		{ read -d '' BANDA_DB; }< <(echo "$1" | sed -rn 's/.+=(.+)/\1/p')
 
-echo "OK"
+		if (( $(echo "$BANDA_DB < -70" | bc -l) )); then
+			echo "Aviso: Valor $BANDA_DB dB para banda $BANDA_HZ Hz é menor que -70 dB e foi ajustado."
+			BANDA_DB=-70
+		fi
+		if (( $(echo "$BANDA_DB > 30" | bc -l) )); then
+			echo "Aviso: Valor $BANDA_DB dB para banda $BANDA_HZ Hz é maior que 30 dB e foi ajustado."
+			BANDA_DB=30
+		fi
+
+		case $BANDA_HZ in
+		50)
+			B50=$BANDA_DB
+			;;
+		100)
+			B100=$BANDA_DB
+			;;
+		156)
+			B156=$BANDA_DB
+			;;
+		220)
+			B220=$BANDA_DB
+			;;
+		311)
+			B311=$BANDA_DB
+                        ;;
+		440)
+			B440=$BANDA_DB
+                        ;;
+		622)
+			B622=$BANDA_DB
+                        ;;
+		880)
+			B880=$BANDA_DB
+                        ;;
+		1250)
+			B1250=$BANDA_DB
+                        ;;
+		1750)
+			B1750=$BANDA_DB
+                        ;;
+		2500)
+			B2500=$BANDA_DB
+                        ;;
+		3500)
+			B3500=$BANDA_DB
+                        ;;
+		5000)
+			B5000=$BANDA_DB
+                        ;;
+		10000)
+			B10000=$BANDA_DB
+                        ;;
+		20000)
+			B20000=$BANDA_DB
+                        ;;
+		*)
+			echo "Aviso: Banda $BANDA_HZ não faz parte dos valores aceitos e foi ignorada."
+			;;
+		esac
+	else
+		echo "Aviso: Parâmetro $1 não está em formato reconhecido e foi ignorado."
+	fi
+
+	if [ -n "$2" ]; then
+		shift
+	else
+		QUIT_LOOP=1
+	fi
+done
 
 echo
-echo "   50Hz : $B1 dB"
-echo "  100Hz : $B2 dB"
-echo "  156Hz : $B3 dB"
-echo "  220Hz : $B4 dB"
-echo "  311Hz : $B5 dB"
-echo "  440Hz : $B6 dB"
-echo "  622Hz : $B7 dB"
-echo "  880Hz : $B8 dB"
-echo " 1250Hz : $B9 dB"
-echo " 1750Hz : $B10 dB"
-echo " 2500Hz : $B11 dB"
-echo " 3500Hz : $B12 dB"
-echo " 5000Hz : $B13 dB"
-echo "10000Hz : $B14 dB"
-echo "20000Hz : $B15 dB"
+echo "   50Hz : $B50 dB"
+echo "  100Hz : $B100 dB"
+echo "  156Hz : $B156 dB"
+echo "  220Hz : $B220 dB"
+echo "  311Hz : $B311 dB"
+echo "  440Hz : $B440 dB"
+echo "  622Hz : $B622 dB"
+echo "  880Hz : $B880 dB"
+echo " 1250Hz : $B1250 dB"
+echo " 1750Hz : $B1750 dB"
+echo " 2500Hz : $B2500 dB"
+echo " 3500Hz : $B3500 dB"
+echo " 5000Hz : $B5000 dB"
+echo "10000Hz : $B10000 dB"
+echo "20000Hz : $B20000 dB"
 echo
 
 echo -n "Obtendo sink ALSA... "
@@ -207,7 +143,7 @@ else
 fi
 
 echo -n "Carregando o módulo ladspa com os novos parâmetros... "
-PA_CMD="load-module module-ladspa-sink sink_name=$LADSPA_SINK master=$SINK_ALSA plugin=mbeq_1197 label=mbeq control=$B1,$B2,$B3,$B4,$B5,$B6,$B7,$B8,$B9,$B10,$B11,$B12,$B13,$B14,$B15"
+PA_CMD="load-module module-ladspa-sink sink_name=$LADSPA_SINK master=$SINK_ALSA plugin=mbeq_1197 label=mbeq control=$B50,$B100,$B156,$B220,$B311,$B440,$B622,$B880,$B1250,$B1750,$B2500,$B3500,$B5000,$B10000,$B20000"
 pactl $PA_CMD > /dev/null
 echo "OK."
 
@@ -217,3 +153,5 @@ echo "OK."
 
 echo
 echo $PA_CMD
+
+
